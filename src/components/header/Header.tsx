@@ -1,19 +1,19 @@
 // src/components/header/Header.tsx
 'use client'
-import React, { FC } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { signOut } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import useUserData from '@/hooks/useUserData'
 
-const Header: FC = () => {
-  const { userData, loading, user } = useUserData()
+const Header = () => {
+  const { user, userRole, userData, loading } = useUserData()
 
   const handleSignOut = async () => {
     await signOut(auth)
   }
 
-  if (loading) return <div>Loading...</div> // Показ загрузки
+  if (loading) return <div>Загрузка...</div>
 
   return (
     <header className='flex gap-4 p-4 bg-gray-800 text-white'>
@@ -28,7 +28,10 @@ const Header: FC = () => {
         </>
       ) : (
         <div className='flex items-center gap-4'>
-          <span>{userData?.name || user.displayName}</span>
+          {userRole === 'admin' && <Link href='/addTeacher'>addTeacher Admin</Link>}
+
+          <span>{userData?.name || user.displayName || 'User'}</span>
+
           {userData?.avatar ? (
             <img
               src={userData.avatar}
@@ -44,6 +47,7 @@ const Header: FC = () => {
               />
             )
           )}
+
           <button onClick={handleSignOut} className='bg-red-500 p-2 rounded'>
             Sign Out
           </button>

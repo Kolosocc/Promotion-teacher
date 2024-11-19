@@ -15,13 +15,10 @@ export const fetchUserDataFx = createEffect(async (user: User) => {
   if (docSnap.exists()) {
     return docSnap.data() as UserData
   } else {
-    // В случае отсутствия данных создаем их
     const defaultUserData: UserData = {
       email: user.email || '',
       name: user.displayName || '',
       avatar: '',
-      bio: '',
-      blocked: [],
     }
     await setDoc(userDocRef, defaultUserData)
     return defaultUserData

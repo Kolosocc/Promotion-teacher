@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase'
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { useUser } from '@/hooks/useUser'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation' 
 
 const Chat = () => {
   const [chats, setChats] = useState<any[]>([])
@@ -12,9 +13,14 @@ const Chat = () => {
   const [error, setError] = useState<string | null>(null)
 
   const user = useUser()
+  const router = useRouter() 
 
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      setError('You must be logged in to view this page.')
+      router.push('/login') 
+      return
+    }
 
     const userChatsDoc = doc(db, 'userchats', user.uid)
 
@@ -40,7 +46,7 @@ const Chat = () => {
     )
 
     return () => unsubscribe()
-  }, [user])
+  }, [user, router])
 
   const handleChatClick = async (chatId: string) => {
     if (!user) return
@@ -59,6 +65,10 @@ const Chat = () => {
     } catch (err) {
       setError('Error updating chat status: ' + err)
     }
+  }
+
+  if (!user) {
+    return <div>You must be logged in to access this page.</div>
   }
 
   if (loading) {

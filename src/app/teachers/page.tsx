@@ -1,23 +1,24 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { Teacher } from '@/types/Teachers'
 
-const TeachersPage = () => {
-  const [teachers, setTeachers] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+const TeachersPage: FC = () => {
+  const [teachers, setTeachers] = useState<Teacher[]>([]) // Типизируем state
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
         const teachersCollection = collection(db, 'teachers')
         const teacherSnapshot = await getDocs(teachersCollection)
-        const teacherList = teacherSnapshot.docs.map((doc) => ({
+        const teacherList: Teacher[] = teacherSnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))
+        })) as Teacher[] 
         setTeachers(teacherList)
       } catch (error) {
         console.error('Ошибка при получении данных преподавателей:', error)
@@ -47,15 +48,15 @@ const TeachersPage = () => {
               {teacher.images && teacher.images.length > 0 ? (
                 <img src={teacher.images[0]} alt={teacher.name} width={100} />
               ) : (
-                <div>Нет изображения</div> 
+                <div>Нет изображения</div>
               )}
             </div>
             <div>
               <h2>{teacher.name}</h2>
-              <p>Кафедра: {teacher.department}</p>
-              <p>Описание: {teacher.description}</p>
-              <p>Средняя оценка: {teacher.sumRate}</p>
-              <p>Количество отзывов: {teacher.countRate}</p>
+              <p>Кафедра: {teacher.department || 'Не указано'}</p>
+              <p>Описание: {teacher.description || 'Нет описания'}</p>
+              <p>Средняя оценка: {teacher.sumRate || 'Нет данных'}</p>
+              <p>Количество отзывов: {teacher.countRate || 0}</p>
               <Link className='bg-red-500 ' href={`/teachers/${teacher.id}`}>
                 Подробнее
               </Link>

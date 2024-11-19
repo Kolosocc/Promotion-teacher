@@ -1,33 +1,41 @@
-// src/hooks/useUserAuth.ts
+import { useUnit } from 'effector-react'
+import { useEffect, useState } from 'react'
+import { auth } from '@/lib/firebase'
+import { $userData, fetchUserDataFx, resetUserData } from '@/models/userModel'
+import { User as FirebaseUser, IdTokenResult } from 'firebase/auth'
+import { UserData, UserRole, UseUserData } from '@/types/UserData'
 
-import { useEffect, useState } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { useUnit } from 'effector-react';
-import { $userData, fetchUserDataFx, resetUserData } from '@/models/userModel';
-import { auth } from '@/lib/firebase';
-import { UserData } from '@/types/UserData';
-
-const useUserData = () => {
-  const userData = useUnit($userData); // Получаем данные из Effector store
-  const [user, setUser] = useState<User | null>(null); // Локальное состояние пользователя
-  const [loading, setLoading] = useState(true); // Флаг загрузки
+const useUserData = (): UseUserData => {
+  const userData = useUnit($userData) as UserData | null
+  const [user, setUser] = useState<FirebaseUser | null>(null)
+  const [userRole, setUserRole] = useState<UserRole>(null)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    // Подписываемся на изменения состояния авторизации
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      setUser(currentUser)
+
       if (currentUser) {
-        await fetchUserDataFx(currentUser); // Загружаем данные пользователя из Firestore
+        try {
+          await fetchUserDataFx(currentUser)
+          const tokenResult: IdTokenResult = await currentUser.getIdTokenResult()
+          const role = tokenResult.claims.role as string | undefined
+          setUserRole(role || null)
+        } catch (error) {
+          console.error('Error fetching user data or role:', error)
+        }
       } else {
-        resetUserData(); // Очищаем данные пользователя при выходе
+        resetUserData()
+        setUserRole(null)
       }
-      setLoading(false); // Завершаем загрузку после получения данных
-    });
 
-    return () => unsubscribe(); // Отписываемся при размонтировании
-  }, []);
+      setLoading(false)
+    })
 
-  return { userData, loading, user };
-};
+    return () => unsubscribe()
+  }, [])
 
-export default useUserData;
+  return { user, userData, userRole, loading }
+}
+
+export default useUserData
