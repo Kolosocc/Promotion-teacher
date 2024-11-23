@@ -1,60 +1,90 @@
-// src/components/header/Header.tsx
-'use client'
-import React from 'react'
-import Link from 'next/link'
-import { signOut } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
-import useUserData from '@/hooks/useUserData'
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { signOut } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import useUserData from "@/hooks/useUserData";
+import styles from "./Header.module.scss";
 
 const Header = () => {
-  const { user, userRole, userData, loading } = useUserData()
+  const { user, userRole, userData, loading } = useUserData();
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Изначально меню скрыто
 
   const handleSignOut = async () => {
-    await signOut(auth)
-  }
+    await signOut(auth);
+  };
 
-  if (loading) return <div>Загрузка...</div>
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev); // Переключение состояния меню
+  };
+
+  if (loading) return <div className={styles.loading}>Загрузка...</div>;
 
   return (
-    <header className='flex gap-4 p-4 bg-gray-800 text-white'>
-      <Link href='/'>Home</Link>
-      <Link href='/teachers'>Teachers</Link>
-      <Link href='/chat'>Chat</Link>
+    <header className={styles.header}>
+      {/* Кнопка бургера, отображается только на мобильных устройствах */}
+      <button className="sm:hidden" onClick={toggleMenu}>
+        <div className={styles.burherMenuIcon} aria-label="Burger Menu" />
+      </button>
 
-      {!user ? (
-        <>
-          <Link href='/login'>Login</Link>
-          <Link href='/register'>Register</Link>
-        </>
-      ) : (
-        <div className='flex items-center gap-4'>
-          {userRole === 'admin' && <Link href='/addTeacher'>addTeacher Admin</Link>}
+      {/* Навигация */}
+      <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ""}`}>
+        <Link href="/" className={styles.navLink}>
+          Home
+        </Link>
+        <Link href="/teachers" className={styles.navLink}>
+          Teachers
+        </Link>
+        <Link href="/chat" className={styles.navLink}>
+          Chat
+        </Link>
 
-          <span>{userData?.name || user.displayName || 'User'}</span>
+        {userRole === "admin" && (
+          <Link href="/addTeacher" className={styles.navLink}>
+            addTeacher Admin
+          </Link>
+        )}
+      </nav>
 
-          {userData?.avatar ? (
-            <img
-              src={userData.avatar}
-              alt={userData.name || 'User avatar'}
-              className='w-8 h-8 rounded-full'
-            />
-          ) : (
-            user.photoURL && (
-              <img
-                src={user.photoURL}
-                alt={user.displayName || 'User avatar'}
-                className='w-8 h-8 rounded-full'
-              />
-            )
-          )}
+      <div className={styles.userInfo}>
+        {!user ? (
+          <>
+            <Link href="/login" className={styles.navLink}>
+              Login
+            </Link>
+            <Link href="/register" className={styles.navLink}>
+              Register
+            </Link>
+          </>
+        ) : (
+          <div className={styles.userInfo}>
+            <div className={styles.userDetails}>
+              <span>{userData?.name || user.displayName || "User"}</span>
+              {userData?.avatar ? (
+                <img
+                  src={userData.avatar}
+                  alt={userData.name || "User avatar"}
+                  className={styles.userAvatar}
+                />
+              ) : (
+                user.photoURL && (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || "User avatar"}
+                    className={styles.userAvatar}
+                  />
+                )
+              )}
+            </div>
 
-          <button onClick={handleSignOut} className='bg-red-500 p-2 rounded'>
-            Sign Out
-          </button>
-        </div>
-      )}
+            <button onClick={handleSignOut} className={styles.signOutButton}>
+              Sign Out
+            </button>
+          </div>
+        )}
+      </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

@@ -6,8 +6,6 @@ import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { UserData } from '@/types/UserData'
 
-
-
 export const fetchUserDataFx = createEffect(async (user: User) => {
   const userDocRef = doc(db, 'users', user.uid)
   const docSnap = await getDoc(userDocRef)
@@ -21,6 +19,7 @@ export const fetchUserDataFx = createEffect(async (user: User) => {
       avatar: '',
     }
     await setDoc(userDocRef, defaultUserData)
+    console.log(defaultUserData)
     return defaultUserData
   }
 })

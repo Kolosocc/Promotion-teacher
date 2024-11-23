@@ -1,5 +1,3 @@
-// Файл: C:\Project IT\React\Promotion_teacher\promotion\src\app/layout.tsx
-
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'

@@ -1,0 +1,52 @@
+.header {
+  @apply flex min-h-20 w-full items-center bg-black pl-6 pr-6 text-text-gray sm:justify-start lg:justify-between lg:pl-28 lg:pr-36;
+}
+
+.nav {
+  @apply hidden lg:gap-6;
+}
+
+.open {
+  @apply flex flex-col lg:flex-row;
+}
+
+.navLink {
+  @apply text-lg transition-colors duration-200 hover:text-text-blue;
+}
+
+.userInfo {
+  @apply flex items-center gap-2 pl-2 lg:gap-6;
+
+  .userDetails {
+    @apply flex items-center gap-4;
+  }
+
+  .userAvatar {
+    @apply h-14 w-14 rounded-full;
+  }
+
+  .signOutButton {
+    @apply w-12 rounded bg-red-600 p-2 text-white transition-colors duration-200 hover:bg-red-800 lg:w-20;
+  }
+}
+
+.loading {
+  @apply text-center text-lg text-text-gray;
+}
+
+.burherMenuIcon {
+  @apply h-14 w-14 bg-text-gray;
+  mask-image: url("/burger-menu.svg");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    @apply flex lg:flex-row;
+  }
+
+  .burherMenuIcon {
+    display: none;
+  }
+}

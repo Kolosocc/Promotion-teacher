@@ -9,6 +9,13 @@ export default {
   theme: {
     extend: {
       colors: {
+        'medium-gray':'#0d1117',
+        'lite-gray':'#262c36',
+        'text-gray': '#9198a1',
+        'text-blue': '#4493f8',
+        black: '#010409',
+        white: '#f0f6fc',
+
         background: "var(--background)",
         foreground: "var(--foreground)",
       },

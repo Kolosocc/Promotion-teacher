@@ -1,9 +1,7 @@
 import { User as FirebaseUser } from 'firebase/auth'
 export interface UserData {
-  id: string
   name: string
   email: string
-  role: string
   avatar?: string
 }
 
