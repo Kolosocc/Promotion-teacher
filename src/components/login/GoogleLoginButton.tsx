@@ -22,7 +22,7 @@ const GoogleLoginButton = () => {
   return (
     <div>
       <button onClick={handleGoogleLogin}>Sign in with Google</button>
-      {error && <p className='error'>{error}</p>}
+      {error && <p className="error">{error}</p>}
     </div>
   )
 }

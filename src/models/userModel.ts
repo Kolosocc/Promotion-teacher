@@ -31,3 +31,5 @@ export const $userData = createStore<UserData | null>(null)
   .on(fetchUserDataFx.doneData, (_, userData) => userData)
   .on(setUserData, (_, userData) => userData)
   .reset(resetUserData)
+
+  

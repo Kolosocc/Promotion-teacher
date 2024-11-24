@@ -1,0 +1,10 @@
+.icon {
+  @apply h-14 w-14 bg-text-gray;
+  mask-image: url("/footer-icon.svg");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+}
+
+.link {
+  @apply text-lg transition-colors duration-200 hover:text-text-blue;
+}

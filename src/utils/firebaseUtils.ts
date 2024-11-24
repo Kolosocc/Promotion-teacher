@@ -109,3 +109,31 @@ export const initializeUserChats = async (userId: string, admins: string[]) => {
 
   await Promise.all(adminPromises)
 }
+
+export const updateProfileInFirestore = async (
+  uid: string,
+  newName: string,
+  newAvatarURL: string
+) => {
+  try {
+    const userRef = doc(db, 'users', uid);
+    await setDoc(userRef, { name: newName, avatar: newAvatarURL }, { merge: true });
+  } catch (error) {
+    console.error('Error updating profile in Firestore:', error);
+    throw new Error('Error updating profile in Firestore');
+  }
+};
+
+export const updateAvatarInFirestore = async (uid: string, avatarFile: File) => {
+  try {
+    const avatarRef = ref(storage, `avatars/${uid}/${avatarFile.name}`);
+    const uploadTask = uploadBytesResumable(avatarRef, avatarFile);
+
+    await uploadTask; 
+    const avatarURL = await getDownloadURL(avatarRef); 
+    return avatarURL;
+  } catch (error) {
+    console.error('Error uploading avatar to Firebase Storage:', error);
+    throw new Error('Error uploading avatar to Firebase Storage');
+  }
+};

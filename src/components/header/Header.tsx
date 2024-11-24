@@ -1,50 +1,51 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import useUserData from "@/hooks/useUserData";
-import styles from "./Header.module.scss";
+'use client'
+import React, { useState } from 'react'
+import Link from 'next/link'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/lib/firebase'
+import useUserData from '@/hooks/useUserData'
+import styles from './Header.module.scss'
+import Image from 'next/image'
 
 const Header = () => {
-  const { user, userRole, userData, loading } = useUserData();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Изначально меню скрыто
+  const { user, userRole, userData, loading } = useUserData()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
-    await signOut(auth);
-  };
+    await signOut(auth)
+  }
 
   const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev); // Переключение состояния меню
-  };
+    setIsMenuOpen((prev) => !prev)
+  }
 
-  if (loading) return <div className={styles.loading}>Загрузка...</div>;
+  if (loading) return <div className={styles.loading}>Загрузка...</div>
 
   return (
     <header className={styles.header}>
-      {/* Кнопка бургера, отображается только на мобильных устройствах */}
-      <button className="sm:hidden" onClick={toggleMenu}>
-        <div className={styles.burherMenuIcon} aria-label="Burger Menu" />
-      </button>
+      <div className="flex">
+        <button className="sm:hidden" onClick={toggleMenu}>
+          <div className={styles.burherMenuIcon} aria-label="Burger Menu" />
+        </button>
 
-      {/* Навигация */}
-      <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ""}`}>
-        <Link href="/" className={styles.navLink}>
-          Home
-        </Link>
-        <Link href="/teachers" className={styles.navLink}>
-          Teachers
-        </Link>
-        <Link href="/chat" className={styles.navLink}>
-          Chat
-        </Link>
-
-        {userRole === "admin" && (
-          <Link href="/addTeacher" className={styles.navLink}>
-            addTeacher Admin
+        <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
+          <Link href="/" className={styles.navLink}>
+            Home
           </Link>
-        )}
-      </nav>
+          <Link href="/teachers" className={styles.navLink}>
+            Teachers
+          </Link>
+          <Link href="/chat" className={styles.navLink}>
+            Chat
+          </Link>
+
+          {userRole === 'admin' && (
+            <Link href="/addTeacher" className={styles.navLink}>
+              addTeacher Admin
+            </Link>
+          )}
+        </nav>
+      </div>
 
       <div className={styles.userInfo}>
         {!user ? (
@@ -58,24 +59,30 @@ const Header = () => {
           </>
         ) : (
           <div className={styles.userInfo}>
-            <div className={styles.userDetails}>
-              <span>{userData?.name || user.displayName || "User"}</span>
-              {userData?.avatar ? (
-                <img
-                  src={userData.avatar}
-                  alt={userData.name || "User avatar"}
-                  className={styles.userAvatar}
-                />
-              ) : (
-                user.photoURL && (
-                  <img
-                    src={user.photoURL}
-                    alt={user.displayName || "User avatar"}
+            <Link href="/profileEdit">
+              <div className={styles.userDetails}>
+                <span>{userData?.name || user.displayName || 'User'}</span>
+                {userData?.avatar ? (
+                  <Image
+                    src={userData.avatar}
+                    alt={userData.name || 'User avatar'}
                     className={styles.userAvatar}
+                    width={56}
+                    height={56}
                   />
-                )
-              )}
-            </div>
+                ) : (
+                  user.photoURL && (
+                    <Image
+                      src={user.photoURL}
+                      alt={user.displayName || 'User avatar'}
+                      className={styles.userAvatar}
+                      width={56}
+                      height={56}
+                    />
+                  )
+                )}
+              </div>
+            </Link>
 
             <button onClick={handleSignOut} className={styles.signOutButton}>
               Sign Out
@@ -84,7 +91,7 @@ const Header = () => {
         )}
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
