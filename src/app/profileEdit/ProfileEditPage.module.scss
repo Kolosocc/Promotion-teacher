@@ -1,0 +1,79 @@
+.profileEditContainer {
+  @apply flex min-h-screen flex-col items-center justify-center bg-medium-gray p-6 text-white;
+
+  h1 {
+    @apply mb-6 text-3xl font-semibold;
+  }
+
+  form {
+    @apply flex w-full max-w-md flex-col gap-6 rounded-lg bg-lite-gray p-8 shadow-lg;
+
+    label {
+      @apply mb-2 text-sm font-semibold text-text-gray;
+    }
+
+    input {
+      @apply w-full rounded border border-text-gray bg-black p-3 text-white focus:border-text-blue focus:outline-none;
+    }
+
+    .avatarUpload {
+      @apply mb-6 flex flex-col items-center gap-2;
+
+      img {
+        @apply rounded-full border border-text-gray object-cover;
+      }
+    }
+
+    .error {
+      @apply mt-2 text-sm text-red-500;
+    }
+
+    button {
+      @apply rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition duration-200 hover:bg-blue-500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      &.loading {
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      p {
+        display: flex;
+        align-items: center;
+        margin: 0;
+      }
+
+      .dots::after {
+        content: '.';
+        display: inline-block;
+        animation: dotAnimation 1s infinite steps(1, end);
+      }
+    }
+  }
+
+  .avatarPreview {
+    @apply flex justify-center;
+
+    img {
+      @apply rounded-full border-2 border-text-gray object-cover;
+    }
+  }
+}
+
+@keyframes dotAnimation {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
+  100% {
+    content: '.';
+  }
+}

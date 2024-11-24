@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import styles from './GoogleLoginButton..module.scss'
 
 const GoogleLoginButton = () => {
   const [error, setError] = useState<string | null>(null)
@@ -21,7 +23,10 @@ const GoogleLoginButton = () => {
 
   return (
     <div>
-      <button onClick={handleGoogleLogin}>Sign in with Google</button>
+      <button onClick={handleGoogleLogin} className={styles.googleLoginBtn}>
+        <Image width={50} height={50} src="/google-icon.png" alt="Google Icon" />
+        Sign in with Google
+      </button>
       {error && <p className="error">{error}</p>}
     </div>
   )

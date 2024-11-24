@@ -61,7 +61,7 @@ const Header = () => {
           <div className={styles.userInfo}>
             <Link href="/profileEdit">
               <div className={styles.userDetails}>
-                <span>{userData?.name || user.displayName || 'User'}</span>
+                <span className={styles.navLink}>{userData?.name || user.displayName || 'User'}</span>
                 {userData?.avatar ? (
                   <Image
                     src={userData.avatar}

@@ -43,3 +43,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #666f7a; 
 }
+
+
+input, button {
+  @apply transition-all duration-200;
+}
+
+button:focus, input:focus {
+  @apply outline-none ring-2 ring-text-blue;
+}

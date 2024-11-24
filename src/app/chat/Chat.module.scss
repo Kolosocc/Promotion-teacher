@@ -1,0 +1,75 @@
+.chatContainer {
+  @apply flex min-h-screen flex-col items-center justify-center bg-medium-gray p-4 text-white;
+
+  h1 {
+    @apply mb-6 text-3xl font-semibold;
+  }
+}
+
+.chatList {
+  @apply flex w-full max-w-2xl flex-col items-center gap-4;
+}
+
+.chatItem {
+  @apply mb-4 w-full rounded-lg p-6 shadow-md transition-all duration-200 ease-in-out;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 120px; /* Increased min height */
+
+  /* Добавляем обводку, которая зависит от состояния isSeen */
+  border: 2px solid;
+  border-color: #262c36; /* Default color for unread chat */
+  &.seen {
+    border-color: #4caf50; /* Green for seen chats */
+  }
+  &.unseen {
+    border-color: #f44336; /* Red for unseen chats */
+  }
+
+  .chatHeader {
+    @apply mb-4 flex items-start justify-start gap-4;
+  }
+
+  .chat-image {
+    @apply h-14 w-14 rounded-full object-cover;
+  }
+
+  .chat-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px; /* Add gap between avatar and text */
+
+    h2 {
+      @apply text-lg font-semibold;
+    }
+
+    p {
+      @apply mt-1 text-sm text-text-gray;
+    }
+  }
+
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 4px;
+  }
+
+  .last-updated {
+    @apply mt-2 text-xs text-text-gray;
+  }
+
+  .go-to-chat-btn {
+    @apply mt-4 rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition-all duration-200 ease-in-out;
+
+    &:hover {
+      @apply bg-blue-500;
+    }
+
+    &:disabled {
+      @apply cursor-not-allowed bg-gray-400;
+    }
+  }
+}

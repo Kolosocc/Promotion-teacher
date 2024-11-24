@@ -1,5 +1,7 @@
 import React, { FC, useState } from 'react'
 import imageCompression from 'browser-image-compression'
+import styles from './AvatarUpload.module.scss'
+import Image from 'next/image'
 
 interface AvatarUploadProps {
   avatar: File | null
@@ -24,9 +26,11 @@ const AvatarUpload: FC<AvatarUploadProps> = ({ avatar, setAvatar }) => {
   }
 
   return (
-    <div>
-      <input type='file' onChange={handleFileChange} accept='image/*' />
-      {avatar && <img src={URL.createObjectURL(avatar)} alt='Avatar preview' width='100' />}
+    <div className={styles.avatarUpload}>
+      <input type="file" onChange={handleFileChange} accept="image/*" />
+      {avatar && (
+        <Image src={URL.createObjectURL(avatar)} alt="Avatar preview" width={100} height={100} />
+      )}
     </div>
   )
 }

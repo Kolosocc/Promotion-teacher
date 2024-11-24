@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import styles from "./Footer.module.scss";
+import React, { FC } from 'react'
+import styles from './Footer.module.scss'
 
 const Footer: FC = () => (
   <footer className="flex items-center justify-center gap-8 p-8 pt-16">
@@ -11,9 +11,9 @@ const Footer: FC = () => (
       rel="noopener noreferrer"
       className={styles.link}
     >
-      Avtor
+      Devoloper
     </a>
   </footer>
-);
+)
 
-export default Footer;
+export default Footer

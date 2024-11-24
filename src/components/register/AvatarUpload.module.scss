@@ -1,0 +1,11 @@
+.avatarUpload {
+  @apply flex flex-col items-center gap-4;
+
+  input {
+    @apply w-full text-sm text-text-gray file:mr-4 file:rounded-lg file:border-0 file:bg-lite-gray file:px-4 file:py-2 file:text-text-blue hover:file:bg-text-blue hover:file:text-white;
+  }
+
+  img {
+    @apply rounded-full border border-text-gray object-cover;
+  }
+}

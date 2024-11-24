@@ -1,33 +1,18 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import LoginForm from "@/components/login/LoginForm";
-import GoogleLoginButton from "@/components/login/GoogleLoginButton";
-import Link from "next/link";
+import React from 'react'
+import styles from './LoginPage.module.scss'
+import LoginForm from '@/components/login/LoginForm'
+import GoogleLoginButton from '@/components/login/GoogleLoginButton'
 
-const LoginPage = () => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) return null;
-
-  return (
-    <div className="login-container">
-      <h1>Login</h1>
-      <LoginForm />
-      <div>
-        <p>Or sign in with:</p>
-        <GoogleLoginButton />
-      </div>
-
-      <Link href="/forgot-password">
-        <p>Забыли пароль</p>
-      </Link>
+const LoginPage = () => (
+  <div className={styles.loginContainer}>
+    <h1>Sign in to Your Account</h1>
+    <LoginForm />
+    <div className="social-login">
+      <GoogleLoginButton />
     </div>
-  );
-};
+  </div>
+)
 
-export default LoginPage;
+export default LoginPage

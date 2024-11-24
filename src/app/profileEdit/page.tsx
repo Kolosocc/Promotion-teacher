@@ -1,17 +1,19 @@
 'use client'
 
 import React, { FC, useState, useEffect } from 'react'
-
 import useUserData from '@/hooks/useUserData'
 import { updateAvatarInFirestore, updateProfileInFirestore } from '@/utils/firebaseUtils'
 import AvatarUpload from '@/components/register/AvatarUpload'
 import { setUserData } from '@/models/userModel'
+import styles from './ProfileEditPage.module.scss'
+import Image from 'next/image'
 
 const ProfileEditPage: FC = () => {
   const { user, userData, loading } = useUserData()
   const [newName, setNewName] = useState<string>(userData?.name || '')
   const [newAvatar, setNewAvatar] = useState<File | null>(null)
   const [avatarURL, setAvatarURL] = useState<string>(userData?.avatar || '')
+  const [isSaving, setIsSaving] = useState<boolean>(false)
 
   useEffect(() => {
     if (userData) {
@@ -22,6 +24,7 @@ const ProfileEditPage: FC = () => {
 
   const handleSave = async () => {
     if (user && newName) {
+      setIsSaving(true)
       try {
         let updatedAvatarURL = avatarURL
 
@@ -31,41 +34,74 @@ const ProfileEditPage: FC = () => {
         }
 
         await updateProfileInFirestore(user.uid, newName, updatedAvatarURL)
-
         setUserData({
           ...userData,
           name: newName,
           avatar: updatedAvatarURL,
           email: userData?.email || '',
         })
-
-        alert('Profile updated successfully')
       } catch (error) {
         console.error('Error updating profile:', error)
         alert('Failed to update profile')
+      } finally {
+        setIsSaving(false)
       }
     }
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className={styles.loadingContainer}>
+        <p>Loading...</p>
+      </div>
+    )
   }
 
   return (
-    <div>
+    <div className={styles.profileEditContainer}>
       <h1>Edit Profile</h1>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input type="text" id="name" value={newName} onChange={(e) => setNewName(e.target.value)} />
-      </div>
+      <form>
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="Enter your name"
+          />
+        </div>
 
-      <div>
-        <AvatarUpload avatar={newAvatar} setAvatar={setNewAvatar} />
-      </div>
+        <div className={styles.avatarUpload}>
+          <AvatarUpload avatar={newAvatar} setAvatar={setNewAvatar} />
+        </div>
 
-      {avatarURL && <img src={avatarURL} alt="Avatar Preview" width={100} />}
+        {avatarURL && (
+          <div>
+            <label htmlFor="name">Old avatar:</label>
+            <div className={styles.avatarPreview}>
+              <Image height={100} width={100} src={avatarURL} alt="Avatar Preview" />
+            </div>
+          </div>
+        )}
 
-      <button onClick={handleSave}>Save</button>
+        <button
+          className={`${isSaving ? styles.loading : ''} ${styles.loadingButton}`}
+          type="button"
+          onClick={handleSave}
+          disabled={isSaving}
+        >
+          <p>
+            {isSaving ? (
+              <>
+                Loading<span className={styles.dots}></span>
+              </>
+            ) : (
+              'Save'
+            )}
+          </p>
+        </button>
+      </form>
     </div>
   )
 }

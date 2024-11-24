@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const LoginForm = () => {
   const [email, setEmail] = useState('')
@@ -25,19 +26,22 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit}>
       <div>
         <label>Email</label>
-        <input type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
       <div>
+        <Link href="/forgot-password">
+          <p>Забыли пароль</p>
+        </Link>
         <label>Password</label>
         <input
-          type='password'
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
       </div>
-      {error && <p className='error'>{error}</p>}
-      <button type='submit'>Login</button>
+      {error && <p className="error">{error}</p>}
+      <button type="submit">Login</button>
     </form>
   )
 }

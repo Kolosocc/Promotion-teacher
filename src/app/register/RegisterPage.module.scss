@@ -1,0 +1,51 @@
+.registerContainer {
+  @apply flex min-h-screen flex-col items-center justify-center bg-medium-gray p-4 text-white;
+
+  h1 {
+    @apply mb-6 text-3xl font-semibold;
+  }
+
+  form {
+    @apply flex w-full max-w-md flex-col gap-4 rounded-lg bg-lite-gray p-8 shadow-lg;
+
+    label {
+      @apply mb-1 text-sm font-semibold text-text-gray;
+    }
+
+    input {
+      @apply w-full rounded border border-text-gray bg-black p-3 text-white focus:border-text-blue focus:outline-none;
+    }
+
+    .avatarUpload {
+      @apply flex flex-col gap-2;
+
+      img {
+        @apply h-24 w-24 rounded-full border border-text-gray object-cover;
+      }
+    }
+
+    .error {
+      @apply mt-2 text-sm text-red-500;
+    }
+
+    button {
+      @apply rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition duration-200 hover:bg-blue-500;
+    }
+  }
+
+  .social-register {
+    @apply mt-6 flex flex-col items-center gap-4;
+
+    p {
+      @apply text-sm text-text-gray;
+    }
+
+    button {
+      @apply flex items-center gap-2 rounded bg-white px-4 py-2 text-black shadow-md transition duration-200 hover:bg-gray-100;
+
+      img {
+        @apply h-5 w-5;
+      }
+    }
+  }
+}

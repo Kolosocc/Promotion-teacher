@@ -20,7 +20,7 @@ export const registerUserWithEmailPassword = async (
   email: string,
   password: string,
   name: string,
-  avatar: File | null
+  avatar: File | null,
 ) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password)
   const user = userCredential.user
@@ -113,27 +113,27 @@ export const initializeUserChats = async (userId: string, admins: string[]) => {
 export const updateProfileInFirestore = async (
   uid: string,
   newName: string,
-  newAvatarURL: string
+  newAvatarURL: string,
 ) => {
   try {
-    const userRef = doc(db, 'users', uid);
-    await setDoc(userRef, { name: newName, avatar: newAvatarURL }, { merge: true });
+    const userRef = doc(db, 'users', uid)
+    await setDoc(userRef, { name: newName, avatar: newAvatarURL }, { merge: true })
   } catch (error) {
-    console.error('Error updating profile in Firestore:', error);
-    throw new Error('Error updating profile in Firestore');
+    console.error('Error updating profile in Firestore:', error)
+    throw new Error('Error updating profile in Firestore')
   }
-};
+}
 
 export const updateAvatarInFirestore = async (uid: string, avatarFile: File) => {
   try {
-    const avatarRef = ref(storage, `avatars/${uid}/${avatarFile.name}`);
-    const uploadTask = uploadBytesResumable(avatarRef, avatarFile);
+    const avatarRef = ref(storage, `avatars/${uid}/`)
+    const uploadTask = uploadBytesResumable(avatarRef, avatarFile)
 
-    await uploadTask; 
-    const avatarURL = await getDownloadURL(avatarRef); 
-    return avatarURL;
+    await uploadTask
+    const avatarURL = await getDownloadURL(avatarRef)
+    return avatarURL
   } catch (error) {
-    console.error('Error uploading avatar to Firebase Storage:', error);
-    throw new Error('Error uploading avatar to Firebase Storage');
+    console.error('Error uploading avatar to Firebase Storage:', error)
+    throw new Error('Error uploading avatar to Firebase Storage')
   }
-};
+}

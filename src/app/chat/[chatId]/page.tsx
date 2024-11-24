@@ -15,7 +15,7 @@ const ChatPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [resivedId, setResivedId] = useState()
 
-  const user = useUser()
+  const { user, loading: userLoading } = useUser() // Получаем пользователя
 
   useEffect(() => {
     if (!chatId || !user) return // Если chatId или user отсутствуют, выходим
@@ -43,28 +43,28 @@ const ChatPage = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-  
+
     if (!messageText.trim() || !chatId || !user) return
-  
+
     try {
       const chatIdStr = Array.isArray(chatId) ? chatId[0] : chatId
       const chatDocRef = doc(db, 'chats', chatIdStr)
-  
+
       await updateDoc(chatDocRef, {
         messages: [
           ...messages,
           {
             createdAt: Timestamp.fromDate(new Date()),
-            senderId: user.uid,
+            senderId: user.uid, // Теперь можно безопасно использовать user.uid
             text: messageText,
           },
         ],
       })
-  
+
       const userChatsDocRef = doc(db, 'userchats', user.uid)
       const userChatsSnapshot = await getDoc(userChatsDocRef)
       let receiverId = null // Инициализируем receiverId
-  
+
       if (userChatsSnapshot.exists()) {
         const data = userChatsSnapshot.data()
         if (data?.chats) {
@@ -80,23 +80,21 @@ const ChatPage = () => {
             }
             return chatItem
           })
-  
+
           await updateDoc(userChatsDocRef, { chats: updatedChats })
         }
       }
-  
-      if (receiverId) { // Используем receiverId напрямую, не через состояние
+
+      if (receiverId) {
+        // Используем receiverId напрямую, не через состояние
         const receiverUserChatsDocRef = doc(db, 'userchats', receiverId)
-        console.log(receiverUserChatsDocRef)
         const receiverUserChatsSnapshot = await getDoc(receiverUserChatsDocRef)
-        console.log(receiverUserChatsSnapshot)
         if (receiverUserChatsSnapshot.exists()) {
           const receiverData = receiverUserChatsSnapshot.data()
 
           if (receiverData?.chats) {
             const updatedReceiverChats = receiverData.chats.map((receiverChat: any) => {
               if (receiverChat.chatId === chatIdStr) {
-                console.log(receiverChat)
                 return {
                   ...receiverChat,
                   isSeen: false,
@@ -106,19 +104,19 @@ const ChatPage = () => {
               }
               return receiverChat
             })
-  
+
             await updateDoc(receiverUserChatsDocRef, { chats: updatedReceiverChats })
           }
         }
       }
-  
-      setMessageText('')
+
+      setMessageText('') // Очистка текстового поля
     } catch (error) {
       setError('Error sending message: ' + error)
     }
   }
-  
-  if (loading) {
+
+  if (loading || userLoading) {
     return <div>Loading chat...</div>
   }
 
@@ -152,9 +150,9 @@ const ChatPage = () => {
         <textarea
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
-          placeholder='Write a message...'
+          placeholder="Write a message..."
         />
-        <button type='submit'>Send</button>
+        <button type="submit">Send</button>
       </form>
     </div>
   )

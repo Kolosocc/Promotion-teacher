@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { registerUserWithGoogle, initializeUserChats } from '@/utils/firebaseUtils'
 import { fetchUserDataFx } from '@/models/userModel'
+import Image from 'next/image'
+import styles from './GoogleRegisterButton.module.scss'
 
 const GoogleRegisterButton = ({ admins }: { admins: string[] }) => {
   const [error, setError] = useState<string | null>(null)
@@ -22,7 +24,10 @@ const GoogleRegisterButton = ({ admins }: { admins: string[] }) => {
 
   return (
     <div>
-      <button onClick={handleGoogleRegister}>Register with Google</button>
+      <button onClick={handleGoogleRegister} className={styles.googleRegisterBtn}>
+        <Image width={50} height={50} src="/google-icon.png" alt="Google Icon" />
+        Register with Google
+      </button>
       {error && <p>{error}</p>}
     </div>
   )
