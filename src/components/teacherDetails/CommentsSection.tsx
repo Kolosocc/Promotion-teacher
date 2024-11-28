@@ -1,33 +1,49 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { collection, addDoc, onSnapshot, doc, updateDoc, getDoc } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  doc,
+  updateDoc,
+  getDoc,
+  orderBy,
+  query,
+} from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useUser } from '@/hooks/useUser'
+import styles from './CommentsSection.module.scss'
 
 export const CommentsSection = () => {
   const { teacherId } = useParams()
+  const { user, loading } = useUser()
   const [comments, setComments] = useState<any[]>([])
   const [comment, setComment] = useState('')
-  const user = useUser()
 
   useEffect(() => {
+    if (loading) return
+
     const teacherIdStr = Array.isArray(teacherId) ? teacherId[0] : teacherId
-    if (!teacherIdStr) return 
+    if (!teacherIdStr) return
 
     const commentsRef = collection(db, 'teachers', teacherIdStr, 'comments')
-    const unsubscribe = onSnapshot(commentsRef, (snapshot) => {
+    const commentsQuery = query(commentsRef, orderBy('timestamp', 'asc'))
+
+    const unsubscribe = onSnapshot(commentsQuery, (snapshot) => {
       setComments(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
     })
 
     return () => unsubscribe()
-  }, [teacherId])
+  }, [teacherId, loading])
 
   const handleSubmitComment = async () => {
-    const teacherIdStr = Array.isArray(teacherId) ? teacherId[0] : teacherId
-    if (!teacherIdStr) return 
+    if (loading) return
     if (!comment) return alert('Пожалуйста, оставьте комментарий.')
     if (!user) return alert('Необходимо авторизоваться.')
+
+    const teacherIdStr = Array.isArray(teacherId) ? teacherId[0] : teacherId
+    if (!teacherIdStr) return
 
     const commentsRef = collection(db, 'teachers', teacherIdStr, 'comments')
 
@@ -37,6 +53,7 @@ export const CommentsSection = () => {
         rate: [],
         timestamp: new Date(),
         userId: user.uid,
+        username: user.displayName || 'Неизвестный пользователь',
       })
       setComment('')
     } catch (error) {
@@ -45,8 +62,10 @@ export const CommentsSection = () => {
   }
 
   const handleLike = async (commentId: string) => {
+    if (loading) return
+
     const teacherIdStr = Array.isArray(teacherId) ? teacherId[0] : teacherId
-    if (!teacherIdStr) return // Проверка на отсутствие teacherId
+    if (!teacherIdStr) return
 
     if (!user) return alert('Авторизуйтесь, чтобы поставить лайк.')
 
@@ -63,33 +82,64 @@ export const CommentsSection = () => {
     }
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault() // Отменяем стандартное поведение Enter
+      handleSubmitComment() // Отправляем комментарий
+    }
+  }
+
+  if (loading) return <p>Загрузка...</p>
+
   return (
-    <div>
-      <h2>Отзывы:</h2>
-      <ul>
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <li key={comment.id}>
-              <p>{comment.text}</p>
-              <p>Лайки: {comment.rate?.length || 0}</p>
-              <button onClick={() => handleLike(comment.id)}>
-                {comment.rate?.includes(user?.uid) ? 'Убрать лайк' : 'Поставить лайк'}
-              </button>
-            </li>
-          ))
-        ) : (
-          <p>Нет отзывов</p>
-        )}
-      </ul>
+    <div className={styles.chatContainer}>
+      <h1>Отзывы</h1>
+      <div className={styles.messagesSection}>
+        <h2>Комментарии</h2>
+        <ul>
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <li
+                key={comment.id}
+                className={styles.messageItem}
+                data-message={comment.userId === user?.uid ? 'sent' : 'received'}
+              >
+                <p>
+                  <strong>{comment.username}</strong> (Добавлен:{' '}
+                  {new Date(comment.timestamp.seconds * 1000).toLocaleString()})
+                </p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: comment.text.replace(/\n/g, '<br />'),
+                  }}
+                ></p>
+                <p>Лайки: {comment.rate?.length || 0}</p>
+                <button
+                  className={comment.rate?.includes(user?.uid) ? styles.liked : styles.notLiked}
+                  onClick={() => handleLike(comment.id)}
+                >
+                  {comment.rate?.includes(user?.uid) ? 'Убрать лайк' : 'Поставить лайк'}
+                </button>
+              </li>
+            ))
+          ) : (
+            <p>Нет отзывов</p>
+          )}
+        </ul>
+      </div>
 
       {user && (
-        <div>
+        <div className={styles.formSection}>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder='Ваш комментарий'
+            onKeyDown={handleKeyPress}
+            placeholder="Write a message... (Shift + Enter for new line)"
+            className={styles.textarea}
           />
-          <button onClick={handleSubmitComment}>Отправить комментарий</button>
+          <button onClick={handleSubmitComment} className={styles.submitButton}>
+            Отправить комментарий
+          </button>
         </div>
       )}
     </div>

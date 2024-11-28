@@ -5,25 +5,23 @@ import { useParams } from 'next/navigation'
 import { db } from '@/lib/firebase'
 import { doc, onSnapshot, updateDoc, Timestamp, getDoc } from 'firebase/firestore'
 import { useUser } from '@/hooks/useUser'
+import styles from './ChatId.module.scss'
 
 const ChatPage = () => {
-  const { chatId } = useParams() // Получаем chatId из URL
-  const [chat, setChat] = useState<any | null>(null) // Стейт для чата
-  const [messages, setMessages] = useState<any[]>([]) // Стейт для сообщений
-  const [messageText, setMessageText] = useState('') // Текст сообщения
+  const { chatId } = useParams()
+  const [chat, setChat] = useState<any | null>(null)
+  const [messages, setMessages] = useState<any[]>([])
+  const [messageText, setMessageText] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [resivedId, setResivedId] = useState()
 
-  const { user, loading: userLoading } = useUser() // Получаем пользователя
+  const { user, loading: userLoading } = useUser()
 
   useEffect(() => {
-    if (!chatId || !user) return // Если chatId или user отсутствуют, выходим
+    if (!chatId || !user) return
 
-    // Преобразуем chatId в строку, если это массив
     const chatIdStr = Array.isArray(chatId) ? chatId[0] : chatId
 
-    // Получаем данные чата в реальном времени
     const chatDocRef = doc(db, 'chats', chatIdStr)
 
     const unsubscribe = onSnapshot(chatDocRef, (docSnapshot) => {
@@ -37,9 +35,8 @@ const ChatPage = () => {
       setLoading(false)
     })
 
-    // Очистка подписки при размонтировании компонента
     return () => unsubscribe()
-  }, [chatId, user]) // Загружаем данные чата при изменении chatId или user
+  }, [chatId, user])
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,7 +52,7 @@ const ChatPage = () => {
           ...messages,
           {
             createdAt: Timestamp.fromDate(new Date()),
-            senderId: user.uid, // Теперь можно безопасно использовать user.uid
+            senderId: user.uid,
             text: messageText,
           },
         ],
@@ -63,14 +60,14 @@ const ChatPage = () => {
 
       const userChatsDocRef = doc(db, 'userchats', user.uid)
       const userChatsSnapshot = await getDoc(userChatsDocRef)
-      let receiverId = null // Инициализируем receiverId
+      let receiverId = null
 
       if (userChatsSnapshot.exists()) {
         const data = userChatsSnapshot.data()
         if (data?.chats) {
           const updatedChats = data.chats.map((chatItem: any) => {
             if (chatItem.chatId === chatIdStr) {
-              receiverId = chatItem.receiverId // Сохраняем receiverId напрямую
+              receiverId = chatItem.receiverId
               return {
                 ...chatItem,
                 isSeen: true,
@@ -86,7 +83,6 @@ const ChatPage = () => {
       }
 
       if (receiverId) {
-        // Используем receiverId напрямую, не через состояние
         const receiverUserChatsDocRef = doc(db, 'userchats', receiverId)
         const receiverUserChatsSnapshot = await getDoc(receiverUserChatsDocRef)
         if (receiverUserChatsSnapshot.exists()) {
@@ -110,9 +106,16 @@ const ChatPage = () => {
         }
       }
 
-      setMessageText('') // Очистка текстового поля
+      setMessageText('')
     } catch (error) {
       setError('Error sending message: ' + error)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSendMessage(e as unknown as React.FormEvent)
     }
   }
 
@@ -121,38 +124,47 @@ const ChatPage = () => {
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div className={styles.error}>{error}</div>
   }
 
   return (
-    <div>
-      <h1>Chat: {chat?.chatId}</h1>
-      <div>
+    <div className={styles.chatContainer}>
+      <h1 className={styles.chatTitle}>Chat: {chat?.chatId}</h1>
+      <div className={styles.messagesSection}>
         <h2>Messages</h2>
         <div>
           {messages.map((msg, index) => {
             const createdAt =
               msg.createdAt instanceof Timestamp ? msg.createdAt.toDate() : msg.createdAt
             return (
-              <div key={index}>
-                <p>
-                  {msg.senderId === user?.uid ? 'You: ' : 'Admin: '}
-                  {msg.text}
-                </p>
-                <p>{createdAt?.toString()}</p> {/* Если createdAt существует, выводим дату */}
+              <div
+                key={index}
+                className={msg.senderId === user?.uid ? styles.sentMessage : styles.receivedMessage}
+              >
+                <p
+                  className={styles.messageText}
+                  dangerouslySetInnerHTML={{
+                    __html: msg.text.replace(/\n/g, '<br />'),
+                  }}
+                ></p>
+                <p className={styles.timestamp}>{createdAt?.toString()}</p>
               </div>
             )
           })}
         </div>
       </div>
 
-      <form onSubmit={handleSendMessage}>
+      <form onSubmit={handleSendMessage} className={styles.formSection}>
         <textarea
+          className={styles.textarea}
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
-          placeholder="Write a message..."
+          onKeyDown={handleKeyDown}
+          placeholder="Write a message... (Shift + Enter for new line)"
         />
-        <button type="submit">Send</button>
+        <button className={styles.submitButton} type="submit">
+          Send
+        </button>
       </form>
     </div>
   )

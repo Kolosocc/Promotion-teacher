@@ -10,15 +10,21 @@ const LoginForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
+
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/')
     } catch (error: any) {
       setError(error.message || 'Error signing in')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -41,7 +47,12 @@ const LoginForm = () => {
         />
       </div>
       {error && <p className="error">{error}</p>}
-      <button type="submit">Login</button>
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Logging in...' : 'Login'}
+      </button>
+      <Link className="" href="/register">
+        Register
+      </Link>
     </form>
   )
 }

@@ -23,29 +23,33 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <div className="flex">
+      <div className={styles.headerContainer}>
+
         <button className="sm:hidden" onClick={toggleMenu}>
-          <div className={styles.burherMenuIcon} aria-label="Burger Menu" />
+          <div className={styles.burgerMenuIcon} aria-label="Burger Menu" />
         </button>
-
-        <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
-          <Link href="/" className={styles.navLink}>
-            Home
-          </Link>
-          <Link href="/teachers" className={styles.navLink}>
-            Teachers
-          </Link>
-          <Link href="/chat" className={styles.navLink}>
-            Chat
-          </Link>
-
-          {userRole === 'admin' && (
-            <Link href="/addTeacher" className={styles.navLink}>
-              addTeacher Admin
-            </Link>
-          )}
-        </nav>
       </div>
+
+
+      <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
+        <Link href="/" className={styles.navLink}>
+          Home
+        </Link>
+        <Link href="/teachers" className={styles.navLink}>
+          Teachers
+        </Link>
+        <Link href="/chat" className={styles.navLink}>
+          Chat
+        </Link>
+
+
+        {userRole === 'admin' && (
+          <Link href="/addTeacher" className={styles.navLink}>
+            Add Teacher (Admin)
+          </Link>
+        )}
+      </nav>
+
 
       <div className={styles.userInfo}>
         {!user ? (
@@ -61,7 +65,9 @@ const Header = () => {
           <div className={styles.userInfo}>
             <Link href="/profileEdit">
               <div className={styles.userDetails}>
-                <span className={styles.navLink}>{userData?.name || user.displayName || 'User'}</span>
+                <span className={styles.navLink}>
+                  {userData?.name || user.displayName || 'User'}
+                </span>
                 {userData?.avatar ? (
                   <Image
                     src={userData.avatar}

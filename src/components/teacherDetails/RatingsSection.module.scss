@@ -1,0 +1,49 @@
+.ratings-container {
+  @apply mx-auto max-w-full pb-10 pt-8 text-white lg:max-w-7xl lg:p-6;
+}
+
+.heading {
+  @apply mb-2 text-2xl font-semibold lg:mb-6;
+}
+
+.form {
+  @apply flex flex-wrap gap-2;
+}
+
+.ratingButton {
+  @apply h-10 w-24 rounded-lg border-2 bg-transparent transition-all duration-100;
+  color: transparent;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.ratingButton:hover {
+  @apply scale-105;
+  filter: brightness(1.2);
+  border-width: 3px;
+}
+
+.selected {
+  border-width: 3px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.warning {
+  @apply text-gray-400;
+}
+
+.average-rating {
+  @apply mt-6;
+}
+
+.average-rating h3 {
+  @apply text-xl font-semibold;
+}
+
+.average-rating p {
+  @apply text-lg;
+}

@@ -1,0 +1,102 @@
+.teacherDetails {
+  @apply mx-auto mt-12 flex max-w-7xl flex-col items-center rounded-lg bg-[#374151] p-6 shadow-lg md:flex-row;
+  color: white;
+}
+
+.imageContainer {
+  @apply mb-[2rem] w-full flex-wrap justify-start md:w-1/3;
+}
+
+.teacherImage {
+  @apply h-auto w-full rounded-lg border object-cover transition-transform duration-300 ease-in-out;
+}
+
+.teacherImage:hover {
+  @apply scale-105 transform;
+}
+
+.teacherInfo {
+  @apply w-full px-4 md:w-2/3;
+}
+
+.teacherInfo h1 {
+  @apply mb-4 text-3xl font-bold;
+}
+
+.teacherInfo p {
+  @apply mb-2 text-lg;
+}
+
+.teacherInfo .rating {
+  @apply font-bold;
+}
+
+.teacherInfo .noRating {
+  @apply font-semibold text-red-500;
+}
+
+.loading {
+  @apply text-center text-lg text-gray-600;
+}
+
+.notFound {
+  @apply text-center text-xl font-semibold text-red-600;
+}
+
+/* Стили для миниатюр изображений */
+.thumbnailContainer {
+  @apply mt-6 flex gap-4;
+}
+
+.thumbnail {
+  @apply cursor-pointer overflow-hidden rounded-lg border-2 border-transparent transition-transform duration-300;
+}
+
+.thumbnail:hover {
+  @apply border-gray-300;
+}
+
+.thumbnailImage {
+  @apply h-24 w-24 rounded-lg object-cover;
+  transition: transform 0.3s ease;
+}
+
+.thumbnailImage:hover {
+  @apply scale-105;
+}
+
+/* Медиа-запросы */
+@media (max-width: 768px) {
+  .teacherDetails {
+    @apply flex-col;
+  }
+
+  .teacherInfo {
+    @apply px-4;
+  }
+
+  .teacherInfo h1 {
+    @apply text-2xl;
+  }
+
+  .teacherInfo p {
+    @apply text-base;
+  }
+
+  .teacherImage {
+    @apply h-40 w-40;
+  }
+}
+
+@media (min-width: 1024px) {
+  .teacherDetails {
+    @apply px-8;
+  }
+  .teacherDetails .teacherInfo {
+    @apply px-12;
+  }
+
+  .teacherDetails .teacherImage {
+    @apply h-96 w-96;
+  }
+}

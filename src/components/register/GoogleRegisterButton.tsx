@@ -7,14 +7,14 @@ import { fetchUserDataFx } from '@/models/userModel'
 import Image from 'next/image'
 import styles from './GoogleRegisterButton.module.scss'
 
-const GoogleRegisterButton = ({ admins }: { admins: string[] }) => {
+const GoogleRegisterButton = () => {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   const handleGoogleRegister = async () => {
     try {
       const user = await registerUserWithGoogle(null)
-      await initializeUserChats(user.uid, admins)
+      await initializeUserChats(user.uid)
       fetchUserDataFx(user)
       router.push('/')
     } catch (error: any) {

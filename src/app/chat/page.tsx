@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { db } from '@/lib/firebase'
-import { doc, onSnapshot, getDoc } from 'firebase/firestore'
+import { doc, onSnapshot, getDoc, updateDoc } from 'firebase/firestore'
 import { useUser } from '@/hooks/useUser'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import styles from './Chat.module.scss' // Импортируем стили через CSS-модули
+import styles from './Chat.module.scss'
 
 const Chat = () => {
   const [chats, setChats] = useState<any[]>([])
@@ -67,7 +67,7 @@ const Chat = () => {
           const userData = userSnapshot.data()
           newDetails.set(chat.receiverId, {
             name: userData?.name || 'Unknown',
-            avatar: userData?.avatar || '/default-avatar.png', // Fallback to default avatar
+            avatar: userData?.avatar || '/default-avatar.png',
           })
         }
       }
@@ -84,6 +84,27 @@ const Chat = () => {
   const getReceiverImage = (receiverId: string) => {
     const receiver = userDetails.get(receiverId)
     return receiver?.avatar || '/default-avatar.png'
+  }
+
+  const handleChatClick = async (chatId: string) => {
+    if (!user) return
+
+    try {
+      const userChatsDoc = doc(db, 'userchats', user.uid)
+
+      const updatedChats = chats.map((chat: any) => {
+        if (chat.chatId === chatId) {
+          return { ...chat, isSeen: true }
+        }
+        return chat
+      })
+
+      await updateDoc(userChatsDoc, { chats: updatedChats })
+
+      setChats(updatedChats)
+    } catch (err) {
+      setError('Error updating chat status: ' + err)
+    }
   }
 
   if (userLoading || loadingChats) {
@@ -118,16 +139,20 @@ const Chat = () => {
                     <h2>{getReceiverName(chat.receiverId)}</h2>
                     <p>{chat.lastMessage}</p>
                     <span
-                      
                       className={`${styles.statusIndicator} ${chat.isSeen ? styles.seen : styles.unseen}`}
-                    />{console.log(chat.isSeen)}
+                    />
                   </div>
                 </div>
                 <p className={styles.lastUpdated}>
                   Last updated: {new Date(chat.updatedAt?.seconds * 1000).toLocaleString()}
                 </p>
                 <Link href={`/chat/${chat.chatId}`}>
-                  <button className={styles.goToChatBtn}>Go to Chat</button>
+                  <button
+                    className={styles.goToChatBtn}
+                    onClick={() => handleChatClick(chat.chatId)}
+                  >
+                    Go to Chat
+                  </button>
                 </Link>
               </li>
             )

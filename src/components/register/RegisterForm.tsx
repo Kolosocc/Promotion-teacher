@@ -4,25 +4,31 @@ import { useRouter } from 'next/navigation'
 import AvatarUpload from '@/components/register/AvatarUpload'
 import { registerUserWithEmailPassword, initializeUserChats } from '@/utils/firebaseUtils'
 import { fetchUserDataFx } from '@/models/userModel'
+import Link from 'next/link'
 
-const RegisterForm = ({ admins }: { admins: string[] }) => {
+const RegisterForm = ({}: {}) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
 
     try {
       const user = await registerUserWithEmailPassword(email, password, name, avatar)
-      await initializeUserChats(user.uid, admins)
+      await initializeUserChats(user.uid)
       fetchUserDataFx(user)
       router.push('/')
     } catch (error: any) {
       setError('Error registering: ' + error.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -62,7 +68,10 @@ const RegisterForm = ({ admins }: { admins: string[] }) => {
         <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
       </div>
       {error && <p className="error">{error}</p>}
-      <button type="submit">Register</button>
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Registering...' : 'Register'}
+      </button>
+      <Link className='' href="/login">Login</Link>
     </form>
   )
 }

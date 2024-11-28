@@ -1,13 +1,22 @@
 .header {
-  @apply flex min-h-20 w-full items-center justify-between bg-black pl-6 pr-6 lg:pl-28 lg:pr-36;
+  @apply relative flex min-h-20 w-full items-center justify-between bg-black pl-6 pr-6 lg:pl-28 lg:pr-36;
+}
+
+.headerContainer {
+  @apply relative z-20 flex items-center justify-between;
 }
 
 .nav {
-  @apply hidden lg:gap-6;
+  @apply absolute left-0 top-20 z-10 w-full transform gap-6 bg-black p-4 text-white transition-transform duration-300 ease-in-out;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .open {
-  @apply flex flex-col lg:flex-row;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .navLink {
@@ -15,7 +24,7 @@
 }
 
 .userInfo {
-  @apply flex items-center gap-2 pl-2 lg:gap-6;
+  @apply z-20 flex w-full justify-end gap-2 pl-2 lg:gap-6;
 
   .userDetails {
     @apply flex items-center gap-4;
@@ -34,19 +43,31 @@
   @apply text-center text-lg;
 }
 
-.burherMenuIcon {
-  @apply h-14 w-14 bg-text-gray;
-  mask-image: url("/burger-menu.svg");
+.burgerMenuIcon {
+  @apply relative z-20 h-14 w-14 bg-text-gray;
+  mask-image: url('/burger-menu.svg');
   mask-size: contain;
   mask-repeat: no-repeat;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .nav {
-    @apply flex lg:flex-row;
+    @apply left-0 flex w-full flex-col;
   }
 
-  .burherMenuIcon {
+  .burgerMenuIcon {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .nav {
+    @apply relative top-0 z-20 flex translate-y-0 bg-transparent p-0 text-white lg:flex-row;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .burgerMenuIcon {
     display: none;
   }
 }

@@ -1,0 +1,141 @@
+.chatContainer {
+  @apply flex min-h-screen flex-col items-center justify-start  p-6 text-white;
+
+  h1 {
+    @apply mb-8 text-3xl font-semibold;
+    color: #ffffff;
+  }
+
+  .messagesSection {
+    @apply flex w-full max-w-3xl flex-col gap-6 rounded-lg bg-gray-700 p-8 shadow-lg;
+
+    h2 {
+      @apply mb-4 text-2xl font-medium;
+      color: #f1f1f1;
+    }
+
+    .messageItem {
+      @apply rounded-lg p-4 shadow-md transition-all duration-200 ease-in-out;
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      border-radius: 10px;
+      word-wrap: break-word;
+      margin-bottom: 15px;
+
+      &.sent {
+        @apply bg-gray-600 text-white;
+        border-left: 4px solid #4caf50;
+        align-self: flex-end;
+      }
+
+      &.received {
+        @apply bg-gray-700 text-white;
+        border-left: 4px solid #f44336;
+        align-self: flex-start;
+      }
+
+      .timestamp {
+        @apply mt-2 text-xs text-gray-400;
+        font-style: italic;
+      }
+    }
+  }
+
+  .formSection {
+    @apply mt-6 w-full max-w-3xl rounded-lg bg-gray-700 p-6 shadow-lg;
+
+    textarea {
+      @apply h-24 w-full resize-none rounded-lg border border-gray-500 bg-gray-800 p-4 text-white focus:border-blue-500 focus:outline-none;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    button {
+      @apply mt-4 w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-all duration-200 ease-in-out;
+
+      &:hover {
+        @apply bg-blue-500;
+      }
+
+      &:disabled {
+        @apply cursor-not-allowed bg-gray-400;
+      }
+    }
+  }
+
+  .error {
+    @apply mt-4 text-sm text-red-500;
+  }
+}
+
+.messageText {
+  @apply text-base;
+  white-space: pre-line;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.chatPage {
+  @apply flex flex-col items-center justify-start gap-8;
+  min-height: 100vh;
+}
+
+.chatTitle {
+  @apply mb-6 text-3xl font-semibold;
+}
+
+.messagesContainer {
+  @apply flex w-full max-w-3xl flex-col gap-6 p-4;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.messageContainer {
+  @apply flex flex-col gap-2;
+}
+
+.message {
+  @apply rounded-lg border-2 p-4 shadow-md;
+  max-width: 80%;
+}
+
+.sentMessage {
+  @apply self-end bg-gray-600 text-white;
+  border-left: 4px solid #4caf50;
+}
+
+.receivedMessage {
+  @apply self-start bg-gray-700 text-white;
+  border-left: 4px solid #f44336;
+}
+
+.timestamp {
+  @apply text-xs text-gray-400;
+  font-style: italic;
+}
+
+.formContainer {
+  @apply mt-6 flex w-full max-w-3xl flex-col items-center gap-4;
+}
+
+.textarea {
+  @apply h-20 w-full rounded-lg border border-gray-500 bg-gray-800 p-4 text-white focus:border-blue-500 focus:outline-none;
+}
+
+.submitButton {
+  @apply mt-4 w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-all duration-200 ease-in-out;
+
+  &:hover {
+    @apply bg-blue-500;
+  }
+
+  &:disabled {
+    @apply cursor-not-allowed bg-gray-400;
+  }
+}
+
+.linkLogin {
+  @apply mt-4 text-center text-sm text-blue-500 underline transition-all duration-200 hover:text-blue-400;
+}

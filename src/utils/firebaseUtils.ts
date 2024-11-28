@@ -13,6 +13,7 @@ import {
   Timestamp,
   updateDoc,
   arrayUnion,
+  getDocs,
 } from 'firebase/firestore'
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
@@ -66,48 +67,56 @@ export const registerUserWithGoogle = async (avatar: File | null) => {
   return user
 }
 
-export const initializeUserChats = async (userId: string, admins: string[]) => {
-  const chatPromises = admins.map(async (adminId) => {
-    const newChatDoc = await addDoc(collection(db, 'chats'), {
-      createdAt: Timestamp.fromDate(new Date()),
-      messages: [
-        {
-          createdAt: Timestamp.fromDate(new Date()),
-          senderId: adminId,
-          text: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
-        },
-      ],
+export const initializeUserChats = async (userId: string) => {
+  try {
+    const admins = await getAdminsFromFirestore()
+    console.log(admins)
+
+    const chatPromises = admins.map(async (adminId) => {
+      const newChatDoc = await addDoc(collection(db, 'chats'), {
+        createdAt: Timestamp.fromDate(new Date()),
+        messages: [
+          {
+            createdAt: Timestamp.fromDate(new Date()),
+            senderId: adminId,
+            text: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
+          },
+        ],
+      })
+
+      return { chatId: newChatDoc.id, adminId }
     })
 
-    return { chatId: newChatDoc.id, adminId }
-  })
+    const chatData = await Promise.all(chatPromises)
 
-  const chatData = await Promise.all(chatPromises)
+    const userChats = chatData.map(({ chatId, adminId }) => ({
+      chatId,
+      isSeen: false,
+      lastMessage: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
+      receiverId: adminId,
+      updatedAt: Timestamp.fromDate(new Date()),
+    }))
 
-  const userChats = chatData.map(({ chatId, adminId }) => ({
-    chatId,
-    isSeen: false,
-    lastMessage: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
-    receiverId: adminId,
-    updatedAt: Timestamp.fromDate(new Date()),
-  }))
+    await setDoc(doc(db, 'userchats', userId), { chats: userChats })
 
-  await setDoc(doc(db, 'userchats', userId), { chats: userChats })
-
-  const adminPromises = chatData.map(async ({ chatId, adminId }) => {
-    const adminUserDoc = doc(db, 'userchats', adminId)
-    await updateDoc(adminUserDoc, {
-      chats: arrayUnion({
-        chatId,
-        isSeen: true,
-        lastMessage: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
-        receiverId: userId,
-        updatedAt: Timestamp.fromDate(new Date()),
-      }),
+    const adminPromises = chatData.map(async ({ chatId, adminId }) => {
+      const adminUserDoc = doc(db, 'userchats', adminId)
+      await updateDoc(adminUserDoc, {
+        chats: arrayUnion({
+          chatId,
+          isSeen: true,
+          lastMessage: `Привет, как вы могли понять я админ. Меня можно найти по нику Admin. Вы всегда сможете связаться со мной через домашнюю страницу.`,
+          receiverId: userId,
+          updatedAt: Timestamp.fromDate(new Date()),
+        }),
+      })
     })
-  })
 
-  await Promise.all(adminPromises)
+    await Promise.all(adminPromises)
+  } catch (error) {
+    console.error('Error initializing user chats:', error)
+    throw new Error('Failed to initialize user chats.')
+  }
 }
 
 export const updateProfileInFirestore = async (
@@ -135,5 +144,18 @@ export const updateAvatarInFirestore = async (uid: string, avatarFile: File) => 
   } catch (error) {
     console.error('Error uploading avatar to Firebase Storage:', error)
     throw new Error('Error uploading avatar to Firebase Storage')
+  }
+}
+
+export const getAdminsFromFirestore = async () => {
+  try {
+    const adminsCollectionRef = collection(db, 'admins')
+    const querySnapshot = await getDocs(adminsCollectionRef)
+
+    const adminUIDs = querySnapshot.docs.map((doc) => doc.id)
+    return adminUIDs
+  } catch (error) {
+    console.error('Error fetching admins from Firestore:', error)
+    throw new Error('Failed to fetch admin UIDs from Firestore.')
   }
 }

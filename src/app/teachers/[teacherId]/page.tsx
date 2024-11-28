@@ -7,8 +7,8 @@ const TeacherDetailsPage = () => {
   return (
     <div>
       <TeacherDetails />
-      <CommentsSection />
       <RatingsSection />
+      <CommentsSection />
     </div>
   )
 }

@@ -5,14 +5,13 @@ import RegisterForm from '@/components/register/RegisterForm'
 import GoogleRegisterButton from '@/components/register/GoogleRegisterButton'
 
 const RegisterPage = () => {
-  const admins = process.env.NEXT_PUBLIC_ADMINS?.split(',') || []
 
   return (
     <div className={styles.registerContainer}>
       <h1>Create Your Account</h1>
-      <RegisterForm admins={admins} />
+      <RegisterForm />
       <div className="social-register">
-        <GoogleRegisterButton admins={admins} />
+        <GoogleRegisterButton  />
       </div>
     </div>
   )

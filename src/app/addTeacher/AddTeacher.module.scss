@@ -1,0 +1,71 @@
+.container {
+  @apply min-h-screen bg-lite-gray p-6;
+}
+
+.heading {
+  @apply mb-6 text-2xl font-semibold text-white;
+}
+
+.form {
+  @apply flex flex-col gap-6;
+}
+
+.input,
+.textarea {
+  @apply rounded-lg border border-gray-500 bg-medium-gray p-3 text-white focus:outline-none focus:ring-2 focus:ring-text-blue;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.hiddenInput {
+  @apply hidden;
+}
+
+.label {
+  @apply cursor-pointer rounded-lg border border-gray-500 bg-medium-gray p-3 text-white hover:bg-lite-gray focus:outline-none focus:ring-2 focus:ring-text-blue;
+}
+
+.imagePreviewContainer {
+  @apply mt-4 flex flex-wrap gap-4;
+}
+
+.imagePreview {
+  @apply relative;
+}
+
+.imagePreview img {
+  @apply h-20 w-20 rounded-lg object-cover;
+}
+
+.removeButton {
+  @apply absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-error-color text-white;
+  &:hover {
+    @apply bg-red-700;
+  }
+}
+
+.submitButton {
+  @apply rounded-lg bg-text-blue p-3 text-white transition-all duration-300 ease-in-out hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-text-blue;
+}
+
+.uploadingButton {
+  @apply cursor-not-allowed rounded-lg bg-gray-500 p-3 text-white;
+}
+
+@media (max-width: 768px) {
+  .container {
+    @apply p-4;
+  }
+}
+
+@media (min-width: 768px) {
+  .form {
+    @apply gap-8;
+  }
+
+  .label {
+    @apply p-4;
+  }
+}

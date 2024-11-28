@@ -12,34 +12,33 @@
 
 .chatItem {
   @apply mb-4 w-full rounded-lg p-6 shadow-md transition-all duration-200 ease-in-out;
-
   display: flex;
   flex-direction: column;
-  min-height: 120px; /* Increased min height */
+  min-height: 120px;
+  border: 2px solid #262c36; // Это базовая рамка
 
-  /* Добавляем обводку, которая зависит от состояния isSeen */
-  border: 2px solid;
-  border-color: #262c36; /* Default color for unread chat */
+  // Условные классы для seen и unseen
   &.seen {
-    border-color: #4caf50; /* Green for seen chats */
+    border-color: #4caf50; // Зеленая рамка для прочитанных сообщений
   }
+
   &.unseen {
-    border-color: #f44336; /* Red for unseen chats */
+    border-color: #f44336; // Красная рамка для непрочитанных сообщений
   }
 
   .chatHeader {
     @apply mb-4 flex items-start justify-start gap-4;
   }
 
-  .chat-image {
+  .chatImage {
     @apply h-14 w-14 rounded-full object-cover;
   }
 
-  .chat-info {
+  .chatInfo {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 8px; /* Add gap between avatar and text */
+    gap: 8px;
 
     h2 {
       @apply text-lg font-semibold;
@@ -50,18 +49,18 @@
     }
   }
 
-  .status-indicator {
+  .statusIndicator {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     margin-top: 4px;
   }
 
-  .last-updated {
+  .lastUpdated {
     @apply mt-2 text-xs text-text-gray;
   }
 
-  .go-to-chat-btn {
+  .goToChatBtn {
     @apply mt-4 rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition-all duration-200 ease-in-out;
 
     &:hover {
