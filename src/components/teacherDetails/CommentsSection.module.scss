@@ -2,16 +2,14 @@
   @apply flex min-h-screen flex-col items-center justify-start text-white lg:p-6;
 
   h1 {
-    @apply mb-8 text-3xl font-semibold;
-    color: #ffffff;
+    @apply mb-8 text-3xl font-semibold text-white;
   }
 
   .messagesSection {
     @apply flex w-full max-w-4xl flex-col gap-6 rounded-lg bg-gray-700 p-8 shadow-lg;
 
     h2 {
-      @apply mb-4 text-2xl font-medium;
-      color: #f1f1f1;
+      @apply mb-4 text-2xl font-medium text-gray-100;
     }
 
     ul {
@@ -19,9 +17,7 @@
     }
 
     .messageItem {
-      @apply rounded-lg p-4 shadow-md transition-all duration-200 ease-in-out;
-      max-width: 80%;
-      border-radius: 10px;
+      @apply max-w-[80%] rounded-lg p-4 shadow-md transition-all duration-200 ease-in-out;
       word-wrap: break-word;
 
       &[data-message='sent'] {

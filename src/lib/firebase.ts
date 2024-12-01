@@ -21,5 +21,4 @@ export const auth = getAuth(app)
 export const storage = getStorage(app)
 
 const isBrowser = typeof window !== 'undefined'
-
 const analytics = isBrowser ? getAnalytics(app) : null

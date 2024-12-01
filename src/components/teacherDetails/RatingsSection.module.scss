@@ -3,7 +3,7 @@
 }
 
 .heading {
-  @apply mb-2 text-2xl font-semibold lg:mb-6;
+  @apply mb-2 text-2xl font-semibold lg:mb-6 lg:text-3xl;
 }
 
 .form {
@@ -11,25 +11,15 @@
 }
 
 .ratingButton {
-  @apply h-10 w-24 rounded-lg border-2 bg-transparent transition-all duration-100;
-  color: transparent;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 0.5rem;
-  cursor: pointer;
+  @apply h-10 w-24 cursor-pointer rounded-lg border-2 bg-transparent p-2 text-lg font-bold text-transparent transition-all duration-100;
 }
 
 .ratingButton:hover {
-  @apply scale-105;
-  filter: brightness(1.2);
-  border-width: 3px;
+  @apply scale-105 border-2 brightness-150;
 }
 
 .selected {
-  border-width: 3px;
-  color: white;
-  background-color: rgba(255, 255, 255, 0.1);
+  @apply border-2 border-white bg-white/10 text-white;
 }
 
 .warning {

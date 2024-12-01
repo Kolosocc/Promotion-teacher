@@ -50,7 +50,7 @@
   mask-repeat: no-repeat;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .nav {
     @apply left-0 flex w-full flex-col;
   }
@@ -60,7 +60,7 @@
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .nav {
     @apply relative top-0 z-20 flex translate-y-0 bg-transparent p-0 text-white lg:flex-row;
     opacity: 1;

@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { doc, collection, getDoc, setDoc, updateDoc, getDocs } from 'firebase/firestore'
+import { doc, collection, getDoc, setDoc, updateDoc, increment } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useUser } from '@/hooks/useUser'
 import styles from './RatingsSection.module.scss'
@@ -9,7 +9,6 @@ import styles from './RatingsSection.module.scss'
 export const RatingsSection = () => {
   const { teacherId } = useParams()
   const { user, loading } = useUser()
-  const [rating, setRating] = useState(0)
   const [userRating, setUserRating] = useState<number | null>(null)
 
   useEffect(() => {
@@ -23,8 +22,6 @@ export const RatingsSection = () => {
   }, [user, teacherId, loading])
 
   const handleRating = async (newRating: number) => {
-    setRating(newRating)
-
     if (loading || !user || !teacherId || newRating === 0) return
 
     const teacherIdStr = Array.isArray(teacherId) ? teacherId[0] : teacherId
@@ -32,14 +29,21 @@ export const RatingsSection = () => {
     const ratingsRef = collection(db, 'teachers', teacherIdStr, 'rates')
 
     try {
-      await setDoc(doc(ratingsRef, user.uid), { num: newRating })
+      const userRatingRef = doc(ratingsRef, user.uid)
+      const userRatingSnap = await getDoc(userRatingRef)
 
-      const ratingsSnap = await getDocs(ratingsRef)
-      const ratings = ratingsSnap.docs.map((doc) => doc.data()?.num || 0)
-      const sumRate = ratings.reduce((acc, r) => acc + r, 0)
-      const countRate = ratings.length
+      let delta = newRating
+      if (userRatingSnap.exists()) {
+        const oldRating = userRatingSnap.data()?.num || 0
+        delta = newRating - oldRating
+      } else {
+        await updateDoc(teacherRef, { countRate: increment(1) })
+      }
 
-      await updateDoc(teacherRef, { sumRate, countRate })
+      await updateDoc(teacherRef, { sumRate: increment(delta) })
+
+      await setDoc(userRatingRef, { num: newRating })
+
       setUserRating(newRating)
     } catch (error) {
       console.error('Ошибка при обновлении рейтинга:', error)
@@ -54,23 +58,20 @@ export const RatingsSection = () => {
 
       {user ? (
         <div className={styles.form}>
-
-            {[...Array(10).keys()].map((i) => (
-              <button
-                key={i + 1}
-                className={`${styles.ratingButton} ${rating === i + 1 ? styles.selected : ''}`}
-                style={{
-                  borderColor: `rgb(${220 - i * 20}, ${i * 20}, 0)`,
-                  color: `rgb(${220 - i * 20}, ${i * 20}, 0)`,
-                  backgroundColor:
-                    userRating === i + 1 ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                }}
-                onClick={() => handleRating(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-
+          {[...Array(10).keys()].map((i) => (
+            <button
+              key={i + 1}
+              className={`${styles.ratingButton} ${userRating === i + 1 ? styles.selected : ''}`}
+              style={{
+                borderColor: `rgb(${220 - i * 20}, ${i * 20}, 0)`,
+                color: `rgb(${220 - i * 20}, ${i * 20}, 0)`,
+                backgroundColor: userRating === i + 1 ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+              }}
+              onClick={() => handleRating(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
         </div>
       ) : (
         <p className={styles.warning}>Авторизуйтесь, чтобы оценить преподавателя.</p>

@@ -29,11 +29,7 @@
     }
 
     button {
-      @apply rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition duration-200 hover:bg-blue-500;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      @apply inline-flex items-center justify-center gap-2 rounded-lg bg-text-blue px-4 py-2 font-medium text-white transition duration-200 hover:bg-blue-500;
 
       &.loading {
         cursor: not-allowed;
@@ -41,9 +37,7 @@
       }
 
       p {
-        display: flex;
-        align-items: center;
-        margin: 0;
+        @apply m-0 flex items-center;
       }
 
       .dots::after {

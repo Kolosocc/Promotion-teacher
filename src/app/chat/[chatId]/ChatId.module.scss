@@ -1,43 +1,30 @@
 .chatContainer {
-  @apply flex min-h-screen flex-col items-center justify-start  p-6 text-white;
+  @apply flex min-h-screen flex-col items-center justify-start p-6 text-white;
 
   h1 {
-    @apply mb-8 text-3xl font-semibold;
-    color: #ffffff;
+    @apply mb-8 text-3xl font-semibold text-white;
   }
 
   .messagesSection {
     @apply flex w-full max-w-3xl flex-col gap-6 rounded-lg bg-gray-700 p-8 shadow-lg;
 
     h2 {
-      @apply mb-4 text-2xl font-medium;
-      color: #f1f1f1;
+      @apply mb-4 text-2xl font-medium text-gray-100;
     }
 
     .messageItem {
-      @apply rounded-lg p-4 shadow-md transition-all duration-200 ease-in-out;
-      display: flex;
-      flex-direction: column;
-      max-width: 80%;
-      border-radius: 10px;
-      word-wrap: break-word;
-      margin-bottom: 15px;
+      @apply mb-4 flex max-w-[80%] flex-col break-words rounded-lg p-4 shadow-md transition-all duration-200 ease-in-out;
 
       &.sent {
-        @apply bg-gray-600 text-white;
-        border-left: 4px solid #4caf50;
-        align-self: flex-end;
+        @apply self-end border-l-4 border-success-color bg-gray-600 text-white;
       }
 
       &.received {
-        @apply bg-gray-700 text-white;
-        border-left: 4px solid #f44336;
-        align-self: flex-start;
+        @apply self-start border-l-4 border-error-color bg-gray-700 text-white;
       }
 
       .timestamp {
-        @apply mt-2 text-xs text-gray-400;
-        font-style: italic;
+        @apply mt-2 text-xs italic text-gray-400;
       }
     }
   }
@@ -46,9 +33,7 @@
     @apply mt-6 w-full max-w-3xl rounded-lg bg-gray-700 p-6 shadow-lg;
 
     textarea {
-      @apply h-24 w-full resize-none rounded-lg border border-gray-500 bg-gray-800 p-4 text-white focus:border-blue-500 focus:outline-none;
-      font-size: 14px;
-      line-height: 1.5;
+      @apply h-24 w-full resize-none rounded-lg border border-gray-500 bg-gray-800 p-4 text-sm leading-6 text-white focus:border-blue-500 focus:outline-none;
     }
 
     button {
@@ -65,20 +50,16 @@
   }
 
   .error {
-    @apply mt-4 text-sm text-red-500;
+    @apply mt-4 text-sm text-error-color;
   }
 }
 
 .messageText {
-  @apply text-base;
-  white-space: pre-line;
-  line-height: 1.5;
-  word-wrap: break-word;
+  @apply whitespace-pre-line break-words text-base leading-6;
 }
 
 .chatPage {
-  @apply flex flex-col items-center justify-start gap-8;
-  min-height: 100vh;
+  @apply flex min-h-screen flex-col items-center justify-start gap-8;
 }
 
 .chatTitle {
@@ -86,10 +67,7 @@
 }
 
 .messagesContainer {
-  @apply flex w-full max-w-3xl flex-col gap-6 p-4;
-  max-height: 60vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
+  @apply flex max-h-[60vh] w-full max-w-3xl flex-col gap-6 overflow-y-auto p-4;
 }
 
 .messageContainer {
@@ -97,23 +75,19 @@
 }
 
 .message {
-  @apply rounded-lg border-2 p-4 shadow-md;
-  max-width: 80%;
+  @apply max-w-[80%] rounded-lg border-2 p-4 shadow-md;
 }
 
 .sentMessage {
-  @apply self-end bg-gray-600 text-white;
-  border-left: 4px solid #4caf50;
+  @apply self-end border-l-4 border-success-color bg-gray-600 text-white;
 }
 
 .receivedMessage {
-  @apply self-start bg-gray-700 text-white;
-  border-left: 4px solid #f44336;
+  @apply self-start border-l-4 border-error-color bg-gray-700 text-white;
 }
 
 .timestamp {
-  @apply text-xs text-gray-400;
-  font-style: italic;
+  @apply text-xs italic text-gray-400;
 }
 
 .formContainer {

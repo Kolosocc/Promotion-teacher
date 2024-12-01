@@ -14,6 +14,7 @@ import {
 import { db } from '@/lib/firebase'
 import { useUser } from '@/hooks/useUser'
 import styles from './CommentsSection.module.scss'
+import Image from 'next/image'
 
 export const CommentsSection = () => {
   const { teacherId } = useParams()
@@ -84,8 +85,8 @@ export const CommentsSection = () => {
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault() // Отменяем стандартное поведение Enter
-      handleSubmitComment() // Отправляем комментарий
+      e.preventDefault() 
+      handleSubmitComment() 
     }
   }
 
